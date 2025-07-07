@@ -20,56 +20,30 @@ export default async function(eleventyConfig) {
   }).use(markdownItAttrs);
   
   eleventyConfig.setLibrary("md", markdownLibrary);
-  eleventyConfig.setLibrary("mdx", markdownLibrary);
   
-  // Add template formats (MDX support)
-  eleventyConfig.setTemplateFormats(["md", "mdx", "njk", "html", "liquid"]);
-  
-  // Copy static assets
-  eleventyConfig.addPassthroughCopy({
-    "src/js": "js",
-    "src/css": "css",
-    "src/images": "images",
-    "src/fonts": "fonts"
-  });
-  
-  // Watch CSS files for changes
-  eleventyConfig.addWatchTarget("src/css/");
-  eleventyConfig.addWatchTarget("src/input.css");
-  eleventyConfig.addWatchTarget("src/js/");
-  
-  // Collections
-  eleventyConfig.addCollection("posts", function(collectionApi) {
-    return collectionApi.getFilteredByGlob(["content/posts/*.md", "content/posts/*.mdx"])
-      .filter(post => post.data.published !== false)
-      .sort((a, b) => {
-        // Convert string dates to Date objects for comparison
-        const dateA = new Date(a.data.date);
-        const dateB = new Date(b.data.date);
-        return dateB - dateA;
-      });
-  });
-  
-  eleventyConfig.addCollection("speakers", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("content/speakers/*.md*");
-  });
-  
-  eleventyConfig.addCollection("sessions", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("content/sessions/*.md*");
-  });
-  
-  // Global data
-  eleventyConfig.addGlobalData("metadata", {
-    title: "AI Conference 2024",
-    description: "Join us for the premier AI Conference 2024 - featuring cutting-edge research, industry insights, and networking opportunities.",
-    url: "https://ai-conference-2024.com", // Change this to your actual domain
-    author: {
-      name: "AI Conference Organization",
-      email: "contact@ai-conference-2024.com"
-    }
+  // Add Filters
+  eleventyConfig.addFilter("limit", function(array, limit) {
+    return array.slice(0, limit);
   });
 
-  // Filters
+  eleventyConfig.addFilter("filter", function(array, key, operator, value) {
+    return array.filter(item => {
+      const itemValue = key.split('.').reduce((obj, key) => obj?.[key], item);
+      switch(operator) {
+        case 'eq':
+          return itemValue === value;
+        case 'ne':
+          return itemValue !== value;
+        case 'gt':
+          return itemValue > value;
+        case 'lt':
+          return itemValue < value;
+        default:
+          return true;
+      }
+    });
+  });
+
   eleventyConfig.addFilter("dateDisplay", function(date) {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -91,6 +65,58 @@ export default async function(eleventyConfig) {
     }
   });
   
+  // Add template formats
+  eleventyConfig.setTemplateFormats([
+    "md",
+    "njk",
+    "html",
+    "liquid"
+  ]);
+  
+  // Copy static assets
+  eleventyConfig.addPassthroughCopy({
+    "src/js": "js",
+    "src/css": "css",
+    "src/images": "images",
+    "src/fonts": "fonts"
+  });
+  
+  // Watch CSS files for changes
+  eleventyConfig.addWatchTarget("src/css/");
+  eleventyConfig.addWatchTarget("src/input.css");
+  eleventyConfig.addWatchTarget("src/js/");
+  
+  // Collections
+  eleventyConfig.addCollection("posts", function(collectionApi) {
+    return collectionApi.getFilteredByGlob(["content/posts/*.md"])
+      .filter(post => post.data.published !== false)
+      .sort((a, b) => {
+        // Convert string dates to Date objects for comparison
+        const dateA = new Date(a.data.date);
+        const dateB = new Date(b.data.date);
+        return dateB - dateA;
+      });
+  });
+  
+  eleventyConfig.addCollection("speakers", function(collectionApi) {
+    return collectionApi.getFilteredByGlob("content/speakers/*.md");
+  });
+  
+  eleventyConfig.addCollection("sessions", function(collectionApi) {
+    return collectionApi.getFilteredByGlob("content/sessions/*.md");
+  });
+  
+  // Global data
+  eleventyConfig.addGlobalData("metadata", {
+    title: "AI Conference 2024",
+    description: "Join us for the premier AI Conference 2024 - featuring cutting-edge research, industry insights, and networking opportunities.",
+    url: "https://ai-conference-2024.com", // Change this to your actual domain
+    author: {
+      name: "AI Conference Organization",
+      email: "contact@ai-conference-2024.com"
+    }
+  });
+  
   // Transform to process CSS through Tailwind
   eleventyConfig.addTransform("postcss", async function(content, outputPath) {
     if (outputPath && outputPath.endsWith(".html")) {
@@ -106,7 +132,7 @@ export default async function(eleventyConfig) {
       layouts: "../src/_layouts",
       output: "_site"
     },
-    templateFormats: ["md", "mdx", "njk", "html", "liquid"],
+    templateFormats: ["md", "njk", "html", "liquid"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
     dataTemplateEngine: "njk"
