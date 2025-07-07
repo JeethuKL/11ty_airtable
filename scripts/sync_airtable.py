@@ -290,12 +290,12 @@ class AirtableSync:
         return frontmatter
 
     def create_post_file(self, record: Dict) -> bool:
-        """Create or update a post MDX file from an Airtable record using correct fields."""
+        """Create or update a post MD file from an Airtable record using correct fields."""
         fields = record.get('fields', {})
         title = self.flatten_value(fields.get('Title', 'Untitled'))
         slug = self.flatten_value(fields.get('Slug', self.sanitize_slug(title)))
         content = self.flatten_value(fields.get('Content', ''))
-        filename = f"{slug}.mdx"
+        filename = f"{slug}.md"
         filepath = POSTS_DIR / filename
         frontmatter = self.create_post_frontmatter(fields)
         full_content = frontmatter + content
@@ -308,7 +308,7 @@ class AirtableSync:
             return False
 
     def create_mdx_file(self, record: Dict, content_type: str = 'posts') -> bool:
-        """Create or update an MDX file from an Airtable record"""
+        """Create or update an MD file from an Airtable record"""
         if content_type == 'posts':
             return self.create_post_file(record)
         # speakers and sessions handled elsewhere
@@ -321,7 +321,7 @@ class AirtableSync:
             target_dir = SESSIONS_DIR
         else:
             target_dir = POSTS_DIR
-        filename = f"{slug}.mdx"
+        filename = f"{slug}.md"
         filepath = target_dir / filename
         if filepath.exists():
             existing_content = filepath.read_text(encoding='utf-8')
