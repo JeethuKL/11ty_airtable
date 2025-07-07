@@ -1,0 +1,23 @@
+---
+title: "Ms. Sarah Lee"
+company: "CyberSecure Inc."
+role: "Head of Cybersecurity"
+bio: "Discussing the challenges and strategies in cybersecurity as AI technologies evolve."
+date: "2025-07-20"
+summary: "{'state': 'generated', 'value': 'Sarah Lee will explore cybersecurity challenges in the AI era.', 'isStale': True}"
+permalink: /speakers/ms-sarah-lee/
+image: "/images/speakers/ms-sarah-lee.jpg"
+generated_at: "2025-07-07T12:33:34.910995"
+layout: "base"
+---
+
+# Ms. Sarah Lee
+
+**CyberSecure Inc. - Head of Cybersecurity**
+
+Discussing the challenges and strategies in cybersecurity as AI technologies evolve.
+
+**Summary:** {'state': 'generated', 'value': 'Sarah Lee will explore cybersecurity challenges in the AI era.', 'isStale': True}
+
+**Presentation Date:** 2025-07-20
+

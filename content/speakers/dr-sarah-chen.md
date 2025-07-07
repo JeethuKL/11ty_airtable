@@ -1,9 +1,11 @@
 ---
+layout: base
 title: "Dr. Sarah Chen"
 company: "TechCorp AI Research"
 role: "Director of AI Research"
 bio: "Leading expert in deep learning and neural architecture search with over 10 years of experience in artificial intelligence research and development."
 image: "/images/speakers/sarah-chen.jpg"
+permalink: /speakers/dr-sarah-chen/
 social:
   twitter: "@sarahchen_ai"
   linkedin: "sarah-chen-ai"

@@ -105,6 +105,88 @@ class AirtableSync:
         """Create a safe filename slug from text"""
         return slugify.slugify(text, lowercase=True, max_length=50)
     
+    def create_speaker_frontmatter(self, fields: Dict) -> str:
+        """Create YAML frontmatter for speakers using user's Airtable fields"""
+        frontmatter = "---\n"
+        # Speaker Name
+        speaker_name = fields.get('Speaker Name', 'Unnamed Speaker')
+        frontmatter += f'title: "{speaker_name}"\n'
+        # Company and Job (try to split)
+        company_and_job = fields.get('Company and Job', '')
+        company = company_and_job
+        role = ''
+        if ' - ' in company_and_job:
+            parts = company_and_job.split(' - ', 1)
+            company = parts[0].strip()
+            role = parts[1].strip()
+        frontmatter += f'company: "{company}"\n'
+        if role:
+            frontmatter += f'role: "{role}"\n'
+        # Bio (Presentation Abstract)
+        bio = fields.get('Presentation Abstract', '')
+        if bio:
+            frontmatter += f'bio: "{bio}"\n'
+        # Presentation Date
+        pres_date = fields.get('Presentation Date', '')
+        if pres_date:
+            frontmatter += f'date: "{pres_date}"\n'
+        # Social Media
+        social = fields.get('Speaker Social Media', '')
+        if social:
+            frontmatter += f'social: "{social}"\n'
+        # Presentation Summary
+        summary = fields.get('Presentation Summary', '')
+        if summary:
+            frontmatter += f'summary: "{summary}"\n'
+        # Slug
+        slug = self.sanitize_slug(speaker_name)
+        frontmatter += f'permalink: /speakers/{slug}/\n'
+        # Default image (could be improved if you add a field)
+        frontmatter += f'image: "/images/speakers/{slug}.jpg"\n'
+        frontmatter += f'generated_at: "{datetime.now().isoformat()}"\n'
+        frontmatter += 'layout: "base"\n'
+        frontmatter += '---\n\n'
+        return frontmatter
+
+    def create_speaker_content(self, fields: Dict) -> str:
+        """Create speaker page content using user's Airtable fields"""
+        speaker_name = fields.get('Speaker Name', 'Unnamed Speaker')
+        company_and_job = fields.get('Company and Job', '')
+        bio = fields.get('Presentation Abstract', '')
+        pres_date = fields.get('Presentation Date', '')
+        summary = fields.get('Presentation Summary', '')
+        social = fields.get('Speaker Social Media', '')
+        content = f"# {speaker_name}\n\n"
+        if company_and_job:
+            content += f"**{company_and_job}**\n\n"
+        if bio:
+            content += f"{bio}\n\n"
+        if summary:
+            content += f"**Summary:** {summary}\n\n"
+        if pres_date:
+            content += f"**Presentation Date:** {pres_date}\n\n"
+        if social:
+            content += f"**Social Media:** {social}\n\n"
+        return content
+
+    def create_speaker_file(self, record: Dict) -> bool:
+        """Create or update a speaker MDX file from an Airtable record using user's fields"""
+        fields = record.get('fields', {})
+        speaker_name = fields.get('Speaker Name', 'Unnamed Speaker')
+        slug = self.sanitize_slug(speaker_name)
+        filename = f"{slug}.md"
+        filepath = SPEAKERS_DIR / filename
+        frontmatter = self.create_speaker_frontmatter(fields)
+        content = self.create_speaker_content(fields)
+        full_content = frontmatter + content
+        try:
+            filepath.write_text(full_content, encoding='utf-8')
+            logger.info(f"Created/updated speaker: {filepath}")
+            return True
+        except Exception as e:
+            logger.error(f"Error writing speaker file {filepath}: {e}")
+            return False
+    
     def create_frontmatter(self, fields: Dict) -> str:
         """Create YAML frontmatter from Airtable fields"""
         frontmatter = "---\n"
@@ -211,11 +293,18 @@ class AirtableSync:
         for record in records:
             fields = record.get('fields', {})
             
-            # Skip unpublished records
-            if not fields.get('published', True):
+            # Skip unpublished records (only for posts, speakers are always active)
+            if content_type == 'posts' and not fields.get('published', True):
                 continue
             
-            if self.create_mdx_file(record, content_type):
+            # Use appropriate creation method based on content type
+            success = False
+            if content_type == 'speakers':
+                success = self.create_speaker_file(record)
+            else:
+                success = self.create_mdx_file(record, content_type)
+            
+            if success:
                 created_count += 1
         
         logger.info(f"Created/updated {created_count} files from {table_name}")
