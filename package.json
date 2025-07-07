@@ -1,0 +1,34 @@
+{
+  "name": "ai-conference-cms",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI Conference static website with Airtable CMS integration",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run build:css-once && npx @11ty/eleventy --serve",
+    "build": "npm run build:css-once && npx @11ty/eleventy",
+    "sync": "python3 scripts/sync_airtable.py && npm run build",
+    "build:css": "mkdir -p _site/css && tailwindcss -i src/input.css -o _site/css/style.css --watch",
+    "build:css-once": "mkdir -p _site/css && tailwindcss -i src/input.css -o _site/css/style.css",
+    "clean": "rm -rf _site",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["eleventy", "11ty", "tailwindcss", "airtable", "static-site", "ai-conference"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "@tailwindcss/typography": "^0.5.0"
+  },
+  "dependencies": {
+    "markdown-it": "^14.0.0",
+    "markdown-it-attrs": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 

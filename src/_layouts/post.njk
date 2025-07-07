@@ -1,0 +1,162 @@
+---
+layout: base
+---
+
+<article class="section-padding">
+    <div class="max-w-4xl mx-auto container-padding">
+        <!-- Post Header -->
+        <header class="mb-8 md:mb-12">
+            {% if category %}
+            <div class="mb-4">
+                <span class="tag tag-primary">{{ category }}</span>
+            </div>
+            {% endif %}
+            
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                {{ title }}
+            </h1>
+            
+            {% if excerpt %}
+            <p class="text-xl text-gray-600 mb-6 leading-relaxed">
+                {{ excerpt }}
+            </p>
+            {% endif %}
+            
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                {% if author %}
+                <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>{{ author }}</span>
+                </div>
+                {% endif %}
+                
+                {% if date %}
+                <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                    </svg>
+                    <time datetime="{{ date | isoDate }}">{{ date | dateDisplay }}</time>
+                </div>
+                {% endif %}
+                
+                {% if readingTime %}
+                <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>{{ readingTime }} min read</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if tags %}
+            <div class="flex flex-wrap gap-2 mt-6">
+                {% for tag in tags %}
+                <span class="tag tag-gray">#{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </header>
+        
+        {% if featured_image %}
+        <div class="mb-8 md:mb-12">
+            <img 
+                src="{{ featured_image }}" 
+                alt="{{ title }}"
+                class="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+            >
+        </div>
+        {% endif %}
+        
+        <!-- Post Content -->
+        <div class="prose-ai">
+            {{ content | safe }}
+        </div>
+        
+        <!-- Post Footer -->
+        <footer class="mt-12 pt-8 border-t border-gray-200">
+            {% if tags %}
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Tags</h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for tag in tags %}
+                    <a href="/tags/{{ tag | slugify }}/" class="tag tag-primary hover:bg-ai-blue-200 transition-colors">
+                        {{ tag }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Share Buttons -->
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium text-gray-900">Share this post:</span>
+                <div class="flex gap-2">
+                    <a 
+                        href="https://twitter.com/intent/tweet?url={{ page.url | url | absoluteUrl(metadata.url) | urlencode }}&text={{ title | urlencode }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn btn-outline text-sm py-2 px-3"
+                    >
+                        Twitter
+                    </a>
+                    <a 
+                        href="https://www.linkedin.com/sharing/share-offsite/?url={{ page.url | url | absoluteUrl(metadata.url) | urlencode }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn btn-outline text-sm py-2 px-3"
+                    >
+                        LinkedIn
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</article>
+
+<!-- Related Posts -->
+{% if collections.posts %}
+<section class="py-16 bg-gray-50">
+    <div class="max-w-6xl mx-auto container-padding">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Related Posts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in collections.posts | limit(3) %}
+            {% if post.url != page.url %}
+            <article class="card hover:shadow-lg transition-shadow">
+                {% if post.data.featured_image %}
+                <img 
+                    src="{{ post.data.featured_image }}" 
+                    alt="{{ post.data.title }}"
+                    class="w-full h-48 object-cover"
+                >
+                {% endif %}
+                <div class="card-body">
+                    {% if post.data.category %}
+                    <span class="tag tag-primary text-xs mb-2">{{ post.data.category }}</span>
+                    {% endif %}
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                        <a href="{{ post.url }}" class="hover:text-ai-blue-600 transition-colors">
+                            {{ post.data.title }}
+                        </a>
+                    </h3>
+                    {% if post.data.excerpt %}
+                    <p class="text-gray-600 text-sm mb-4">{{ post.data.excerpt | truncate(120) }}</p>
+                    {% endif %}
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        {% if post.data.date %}
+                        <time datetime="{{ post.data.date | isoDate }}">{{ post.data.date | dateDisplay }}</time>
+                        {% endif %}
+                        <a href="{{ post.url }}" class="text-ai-blue-600 hover:text-ai-blue-700 font-medium">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %} 

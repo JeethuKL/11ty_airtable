@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} | {% endif %}AI Conference 2024</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="{{ description or 'Join us for the premier AI Conference 2024 - featuring cutting-edge research, industry insights, and networking opportunities.' }}">
+    <meta name="keywords" content="AI, artificial intelligence, machine learning, conference, technology, research">
+    <meta name="author" content="AI Conference 2024">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{% if title %}{{ title }} | {% endif %}AI Conference 2024">
+    <meta property="og:description" content="{{ description or 'Join us for the premier AI Conference 2024' }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ page.url | url | absoluteUrl(metadata.url) }}">
+    {% if featured_image %}
+    <meta property="og:image" content="{{ featured_image | url | absoluteUrl(metadata.url) }}">
+    {% endif %}
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}AI Conference 2024">
+    <meta name="twitter:description" content="{{ description or 'Join us for the premier AI Conference 2024' }}">
+    {% if featured_image %}
+    <meta name="twitter:image" content="{{ featured_image | url | absoluteUrl(metadata.url) }}">
+    {% endif %}
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ page.url | url | absoluteUrl(metadata.url) }}">
+    
+    {% if layout != "base" %}
+        {% block head %}{% endblock %}
+    {% endif %}
+</head>
+<body class="flex flex-col min-h-full bg-white">
+    <!-- Skip to main content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-ai-blue-600 text-white px-4 py-2 rounded-md z-50">
+        Skip to main content
+    </a>
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        {% include "header.njk" %}
+    </header>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1">
+        {% if layout != "base" %}
+            {% block content %}
+                {{ content | safe }}
+            {% endblock %}
+        {% else %}
+            {{ content | safe }}
+        {% endif %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        {% include "footer.njk" %}
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+    
+    {% if layout != "base" %}
+        {% block scripts %}{% endblock %}
+    {% endif %}
+</body>
+</html> 
