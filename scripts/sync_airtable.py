@@ -247,42 +247,89 @@ class AirtableSync:
         
         return frontmatter
     
+    def create_post_frontmatter(self, fields: Dict) -> str:
+        """Create YAML frontmatter for posts using Airtable fields, flattening all values."""
+        frontmatter = "---\n"
+        # Title
+        title = self.flatten_value(fields.get('Title', 'Untitled'))
+        frontmatter += f'title: "{title}"\n'
+        # Slug
+        slug = self.flatten_value(fields.get('Slug', self.sanitize_slug(title)))
+        frontmatter += f'slug: "{slug}"\n'
+        # Date
+        date = self.flatten_value(fields.get('Date', ''))
+        if date:
+            frontmatter += f'date: "{date}"\n'
+        # Author
+        author = self.flatten_value(fields.get('Author', ''))
+        if author:
+            frontmatter += f'author: "{author}"\n'
+        # Excerpt
+        excerpt = self.flatten_value(fields.get('Excerpt', ''))
+        if excerpt:
+            frontmatter += f'excerpt: "{excerpt}"\n'
+        # Tags (list)
+        tags = fields.get('Tags', [])
+        if tags:
+            if isinstance(tags, list):
+                frontmatter += 'tags:\n'
+                for tag in tags:
+                    frontmatter += f'  - {self.flatten_value(tag)}\n'
+            else:
+                frontmatter += f'tags: [{self.flatten_value(tags)}]\n'
+        # Published
+        published = fields.get('Published', True)
+        frontmatter += f'published: {str(published).lower()}\n'
+        # Featured
+        featured = fields.get('Featured', False)
+        frontmatter += f'featured: {str(featured).lower()}\n'
+        # Generated at
+        frontmatter += f'generated_at: "{datetime.now().isoformat()}"\n'
+        frontmatter += 'layout: "post"\n'
+        frontmatter += '---\n\n'
+        return frontmatter
+
+    def create_post_file(self, record: Dict) -> bool:
+        """Create or update a post MDX file from an Airtable record using correct fields."""
+        fields = record.get('fields', {})
+        title = self.flatten_value(fields.get('Title', 'Untitled'))
+        slug = self.flatten_value(fields.get('Slug', self.sanitize_slug(title)))
+        content = self.flatten_value(fields.get('Content', ''))
+        filename = f"{slug}.mdx"
+        filepath = POSTS_DIR / filename
+        frontmatter = self.create_post_frontmatter(fields)
+        full_content = frontmatter + content
+        try:
+            filepath.write_text(full_content, encoding='utf-8')
+            logger.info(f"Created/updated post: {filepath}")
+            return True
+        except Exception as e:
+            logger.error(f"Error writing post file {filepath}: {e}")
+            return False
+
     def create_mdx_file(self, record: Dict, content_type: str = 'posts') -> bool:
         """Create or update an MDX file from an Airtable record"""
+        if content_type == 'posts':
+            return self.create_post_file(record)
+        # speakers and sessions handled elsewhere
         fields = record.get('fields', {})
-        
-        # Get required fields
+        # fallback for other types
         title = fields.get('title', 'Untitled')
         slug = fields.get('slug') or self.sanitize_slug(title)
         content = fields.get('content', '')
-        
-        # Determine target directory
-        if content_type == 'speakers':
-            target_dir = SPEAKERS_DIR
-        elif content_type == 'sessions':
+        if content_type == 'sessions':
             target_dir = SESSIONS_DIR
         else:
             target_dir = POSTS_DIR
-        
-        # Create filename
         filename = f"{slug}.mdx"
         filepath = target_dir / filename
-        
-        # Check if file exists and has same content (skip if unchanged)
         if filepath.exists():
             existing_content = filepath.read_text(encoding='utf-8')
-            # Simple check - could be more sophisticated
             if title in existing_content and content in existing_content:
                 logger.debug(f"Skipping unchanged file: {filepath}")
                 return False
-        
-        # Create frontmatter
         frontmatter = self.create_frontmatter(fields)
-        
-        # Combine frontmatter and content
         full_content = frontmatter + content
-        
-        # Write file
         try:
             filepath.write_text(full_content, encoding='utf-8')
             logger.info(f"Created/updated: {filepath}")
