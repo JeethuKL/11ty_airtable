@@ -4,10 +4,10 @@ company: "CyberSecure Inc."
 role: "Head of Cybersecurity"
 bio: "Discussing the challenges and strategies in cybersecurity as AI technologies evolve."
 date: "2025-07-20"
-summary: "{'state': 'generated', 'value': 'Sarah Lee will explore cybersecurity challenges in the AI era.', 'isStale': True}"
+summary: "Sarah Lee will explore cybersecurity challenges in the AI era."
 permalink: /speakers/ms-sarah-lee/
 image: "/images/speakers/ms-sarah-lee.jpg"
-generated_at: "2025-07-07T12:33:34.910995"
+generated_at: "2025-07-07T12:35:19.919599"
 layout: "base"
 ---
 

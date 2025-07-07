@@ -105,14 +105,25 @@ class AirtableSync:
         """Create a safe filename slug from text"""
         return slugify.slugify(text, lowercase=True, max_length=50)
     
+    def flatten_value(self, value):
+        """Flatten Airtable field value for YAML frontmatter: dicts/lists to string, else as-is."""
+        if isinstance(value, dict):
+            # Use 'value' key if present, else stringified dict
+            return value.get('value') if 'value' in value else str(value)
+        elif isinstance(value, list):
+            # Join list as comma-separated string
+            return ', '.join([self.flatten_value(v) for v in value])
+        else:
+            return str(value)
+
     def create_speaker_frontmatter(self, fields: Dict) -> str:
-        """Create YAML frontmatter for speakers using user's Airtable fields"""
+        """Create YAML frontmatter for speakers using user's Airtable fields, flattening all values."""
         frontmatter = "---\n"
         # Speaker Name
-        speaker_name = fields.get('Speaker Name', 'Unnamed Speaker')
+        speaker_name = self.flatten_value(fields.get('Speaker Name', 'Unnamed Speaker'))
         frontmatter += f'title: "{speaker_name}"\n'
         # Company and Job (try to split)
-        company_and_job = fields.get('Company and Job', '')
+        company_and_job = self.flatten_value(fields.get('Company and Job', ''))
         company = company_and_job
         role = ''
         if ' - ' in company_and_job:
@@ -123,19 +134,19 @@ class AirtableSync:
         if role:
             frontmatter += f'role: "{role}"\n'
         # Bio (Presentation Abstract)
-        bio = fields.get('Presentation Abstract', '')
+        bio = self.flatten_value(fields.get('Presentation Abstract', ''))
         if bio:
             frontmatter += f'bio: "{bio}"\n'
         # Presentation Date
-        pres_date = fields.get('Presentation Date', '')
+        pres_date = self.flatten_value(fields.get('Presentation Date', ''))
         if pres_date:
             frontmatter += f'date: "{pres_date}"\n'
         # Social Media
-        social = fields.get('Speaker Social Media', '')
+        social = self.flatten_value(fields.get('Speaker Social Media', ''))
         if social:
             frontmatter += f'social: "{social}"\n'
         # Presentation Summary
-        summary = fields.get('Presentation Summary', '')
+        summary = self.flatten_value(fields.get('Presentation Summary', ''))
         if summary:
             frontmatter += f'summary: "{summary}"\n'
         # Slug

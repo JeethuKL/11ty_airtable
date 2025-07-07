@@ -4,10 +4,10 @@ company: "Tech University"
 role: "Professor"
 bio: "An in-depth look at the latest advancements in machine learning and their applications across various industries."
 date: "2025-10-05"
-summary: "{'state': 'generated', 'value': 'Prof. Nguyen will present the latest in machine learning advancements.', 'isStale': True}"
+summary: "Prof. Nguyen will present the latest in machine learning advancements."
 permalink: /speakers/prof-michael-nguyen/
 image: "/images/speakers/prof-michael-nguyen.jpg"
-generated_at: "2025-07-07T12:33:34.912569"
+generated_at: "2025-07-07T12:35:19.920320"
 layout: "base"
 ---
 
