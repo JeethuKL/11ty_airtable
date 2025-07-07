@@ -1,5 +1,0 @@
-{
-  "layout": "base",
-  "tags": "speakers",
-  "permalink": "/speakers/{{ title | slugify }}/"
-} 

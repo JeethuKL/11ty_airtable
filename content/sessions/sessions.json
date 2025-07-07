@@ -1,5 +1,0 @@
-{
-  "layout": "base",
-  "tags": "sessions",
-  "permalink": "/sessions/{{ title | slugify }}/"
-} 
