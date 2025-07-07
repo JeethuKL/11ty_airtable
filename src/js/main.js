@@ -1,3 +1,6 @@
+// Placeholder JS file to prevent 404 and MIME errors.
+// Add your custom scripts here if needed.
+
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuButton = document.querySelector('.mobile-menu-button');
