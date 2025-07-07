@@ -29,6 +29,8 @@ export default async function handler(req, res) {
   if (response.ok) {
     res.status(200).json({ ok: true });
   } else {
-    res.status(500).json({ ok: false, error: await response.text() });
+    const errorText = await response.text();
+    console.error('GitHub dispatch error:', errorText);
+    res.status(500).json({ ok: false, error: errorText });
   }
 } 
