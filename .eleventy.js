@@ -1,6 +1,7 @@
 import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
 import markdownIt from "markdown-it";
 import markdownItAttrs from "markdown-it-attrs";
+import { EleventyRenderPlugin } from "@11ty/eleventy";
 
 export default async function(eleventyConfig) {
   // Set input and output directories
@@ -9,6 +10,7 @@ export default async function(eleventyConfig) {
   
   // Add plugins
   eleventyConfig.addPlugin(syntaxHighlight);
+  eleventyConfig.addPlugin(EleventyRenderPlugin);
   
   // Configure Markdown
   const markdownLibrary = markdownIt({
@@ -18,23 +20,34 @@ export default async function(eleventyConfig) {
   }).use(markdownItAttrs);
   
   eleventyConfig.setLibrary("md", markdownLibrary);
+  eleventyConfig.setLibrary("mdx", markdownLibrary);
   
   // Add template formats (MDX support)
   eleventyConfig.setTemplateFormats(["md", "mdx", "njk", "html", "liquid"]);
   
   // Copy static assets
-  eleventyConfig.addPassthroughCopy("src/css");
-  eleventyConfig.addPassthroughCopy("src/js");
-  eleventyConfig.addPassthroughCopy("src/images");
-  eleventyConfig.addPassthroughCopy("src/fonts");
+  eleventyConfig.addPassthroughCopy({
+    "src/js": "js",
+    "src/css": "css",
+    "src/images": "images",
+    "src/fonts": "fonts"
+  });
   
   // Watch CSS files for changes
   eleventyConfig.addWatchTarget("src/css/");
   eleventyConfig.addWatchTarget("src/input.css");
+  eleventyConfig.addWatchTarget("src/js/");
   
   // Collections
   eleventyConfig.addCollection("posts", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("content/posts/*.md*");
+    return collectionApi.getFilteredByGlob(["content/posts/*.md", "content/posts/*.mdx"])
+      .filter(post => post.data.published !== false)
+      .sort((a, b) => {
+        // Convert string dates to Date objects for comparison
+        const dateA = new Date(a.data.date);
+        const dateB = new Date(b.data.date);
+        return dateB - dateA;
+      });
   });
   
   eleventyConfig.addCollection("speakers", function(collectionApi) {

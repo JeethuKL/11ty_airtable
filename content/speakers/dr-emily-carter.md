@@ -7,7 +7,7 @@ date: "2025-09-10"
 summary: "Dr. Emily Carter will discuss AI's impact on healthcare, sharing insights and case studies."
 permalink: /speakers/dr-emily-carter/
 image: "/images/speakers/dr-emily-carter.jpg"
-generated_at: "2025-07-07T13:50:15.708146"
+generated_at: "2025-07-07T14:02:19.269168"
 layout: "base"
 ---
 

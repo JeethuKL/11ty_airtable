@@ -5,48 +5,51 @@
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuButton = document.querySelector('.mobile-menu-button');
     const mobileMenu = document.querySelector('#mobile-menu');
-    const menuIcon = mobileMenuButton.querySelector('svg:first-child');
-    const closeIcon = mobileMenuButton.querySelector('svg:last-child');
     
     if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function() {
-            const isOpen = !mobileMenu.classList.contains('hidden');
+        const menuIcon = mobileMenuButton.querySelector('svg:first-child');
+        const closeIcon = mobileMenuButton.querySelector('svg:last-child');
+        
+        if (menuIcon && closeIcon) {
+            mobileMenuButton.addEventListener('click', function() {
+                const isOpen = !mobileMenu.classList.contains('hidden');
+                
+                if (isOpen) {
+                    // Close menu
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                    mobileMenuButton.setAttribute('aria-expanded', 'false');
+                } else {
+                    // Open menu
+                    mobileMenu.classList.remove('hidden');
+                    menuIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                    mobileMenuButton.setAttribute('aria-expanded', 'true');
+                }
+            });
             
-            if (isOpen) {
-                // Close menu
-                mobileMenu.classList.add('hidden');
-                menuIcon.classList.remove('hidden');
-                closeIcon.classList.add('hidden');
-                mobileMenuButton.setAttribute('aria-expanded', 'false');
-            } else {
-                // Open menu
-                mobileMenu.classList.remove('hidden');
-                menuIcon.classList.add('hidden');
-                closeIcon.classList.remove('hidden');
-                mobileMenuButton.setAttribute('aria-expanded', 'true');
-            }
-        });
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                    mobileMenuButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Close mobile menu on window resize (desktop)
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) {
+                    mobileMenu.classList.add('hidden');
+                    menuIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                    mobileMenuButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
     }
-    
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-            mobileMenu.classList.add('hidden');
-            menuIcon.classList.remove('hidden');
-            closeIcon.classList.add('hidden');
-            mobileMenuButton.setAttribute('aria-expanded', 'false');
-        }
-    });
-    
-    // Close mobile menu on window resize (desktop)
-    window.addEventListener('resize', function() {
-        if (window.innerWidth >= 768) {
-            mobileMenu.classList.add('hidden');
-            menuIcon.classList.remove('hidden');
-            closeIcon.classList.add('hidden');
-            mobileMenuButton.setAttribute('aria-expanded', 'false');
-        }
-    });
 });
 
 // Smooth scrolling for anchor links
