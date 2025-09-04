@@ -7,7 +7,7 @@ date: "2025-07-20"
 summary: "Sarah Lee will explore cybersecurity challenges in the AI era."
 permalink: /speakers/ms-sarah-lee/
 image: "/images/speakers/ms-sarah-lee.jpg"
-generated_at: "2025-09-03T06:32:45.484855"
+generated_at: "2025-09-04T06:33:38.682911"
 layout: "base"
 ---
 
