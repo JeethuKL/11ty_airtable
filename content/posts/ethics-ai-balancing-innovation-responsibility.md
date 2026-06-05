@@ -8,7 +8,7 @@ tags:
   - ai
 published: true
 featured: true
-generated_at: "2026-06-04T10:03:38.177798"
+generated_at: "2026-06-05T10:01:10.304027"
 layout: "post"
 ---
 
