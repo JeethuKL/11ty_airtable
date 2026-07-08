@@ -7,7 +7,7 @@ date: "2025-10-05"
 summary: "Prof. Nguyen will present the latest in machine learning advancements."
 permalink: /speakers/prof-michael-nguyen/
 image: "/images/speakers/prof-michael-nguyen.jpg"
-generated_at: "2026-07-07T09:51:14.059764"
+generated_at: "2026-07-08T08:36:32.342231"
 layout: "base"
 ---
 
