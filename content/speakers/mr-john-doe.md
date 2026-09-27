@@ -7,7 +7,7 @@ date: "2025-08-15"
 summary: "John Doe's presentation will cover his innovative solutions in the tech industry."
 permalink: /speakers/mr-john-doe/
 image: "/images/speakers/mr-john-doe.jpg"
-generated_at: "2026-09-26T11:07:16.059209"
+generated_at: "2026-09-27T11:45:44.854768"
 layout: "base"
 ---
 
