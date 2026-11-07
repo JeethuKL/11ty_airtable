@@ -8,7 +8,7 @@ tags:
   - speakers
 published: true
 featured: true
-generated_at: "2026-11-06T14:00:23.263360"
+generated_at: "2026-11-07T12:44:34.931102"
 layout: "post"
 ---
 
